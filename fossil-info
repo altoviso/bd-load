@@ -3,9 +3,10 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     a29486fd9fcf8dc2837b7f3cdf7c7b1c227c4e65 2010-12-16 06:44:37 UTC
-parent:       21b3325d52d394fb5094fabf5878d91461af0966 2010-12-14 02:22:15 UTC
-child:        78393a070003fec784142ecad7f485496b260fef 2010-12-31 19:03:14 UTC
+checkout:     78393a070003fec784142ecad7f485496b260fef 2010-12-31 19:03:14 UTC
+parent:       a29486fd9fcf8dc2837b7f3cdf7c7b1c227c4e65 2010-12-16 06:44:37 UTC
+child:        a154ec7c9767b5abd8d506cc35501e7d69cd40d5 2011-01-05 11:13:53 UTC
 tags:         trunk
-comment:      initial commit of backdraft AMD loader as separate project;
-              loader taken from backdraft and dojo-sie projects (user: rcgill)
+comment:      expanded features in global define so that global require is not
+              necessary; changed default config to not sniff, include default
+              baseUrl and deps. (user: rcgill)
