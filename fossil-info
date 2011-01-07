@@ -3,7 +3,8 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     a154ec7c9767b5abd8d506cc35501e7d69cd40d5 2011-01-05 11:13:53 UTC
-parent:       78393a070003fec784142ecad7f485496b260fef 2010-12-31 19:03:14 UTC
+checkout:     88b69a33214cfb49c771744978766c3184b89001 2011-01-07 11:45:34 UTC
+parent:       a154ec7c9767b5abd8d506cc35501e7d69cd40d5 2011-01-05 11:13:53 UTC
 tags:         trunk
-comment:      interim (user: rcgill)
+comment:      [1f34754ea6] add requirejs tests; clean cruft; minor features
+              added/subtracted (user: rcgill)
