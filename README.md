@@ -22,7 +22,7 @@ bdBuild is free and open source software available under a BSD-style license.
 
 [The backdraft framwork](http://bdframework.org/index.html)
 
-[bdBuild](https://github.com/altoviso/bdLoad) (the backdraft build program)
+[bdBuild](https://github.com/altoviso/bdBuild) (the backdraft build program)
 
 
 
