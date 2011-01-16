@@ -249,7 +249,7 @@
       // push config into require, but don't step on certain properties that are expected and
       // require special processing; notice that client code can use config to hold client
       // configuration switches that have nothing to do with require
-      for (p in config) if (!/pathTransforms|paths|packages|packageMap|packagePaths|hasValues|ready/.test(p)) {
+      for (p in config) if (!/pathTransforms|paths|packages|packageMap|packagePaths|cache|hasMap|ready/.test(p)) {
         req[p]= config[p];
       };
 
@@ -273,6 +273,11 @@
 
       // mix any packageMap config item and recompute the internal packageMapProg
       packageMapProg= computeMapProg(mix(packageMap, config.packageMap));
+
+      // push in any new cache values
+      for (p in config.cache) {
+        cache[p]= config.cache[p];
+      }
 
       // push in any new hasMap values
       for (p in config.hasMap) {
@@ -1281,7 +1286,7 @@
   (function() {
   // if has is not provided, define a trivial implementation
     var has= function(name) { 
-      return arguments.callee.hasMap[name]; 
+      return has.hasMap[name]; 
     };
     has.hasMap= {
       "dom":1,

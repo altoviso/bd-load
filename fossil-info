@@ -3,7 +3,9 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     a20e072ecda5d63154aff03ad8810d81d5ff8645 2011-01-12 05:06:04 UTC
-parent:       3f1a05bdc5f0d94a562543896d976136f94f4be1 2011-01-12 04:53:51 UTC
+checkout:     f1be9a81b602dbb6653681e8882bb4c175960f5e 2011-01-15 22:37:25 UTC
+parent:       a20e072ecda5d63154aff03ad8810d81d5ff8645 2011-01-12 05:06:04 UTC
+child:        831b76fa152c09c85ba68e257a910511a9266584 2011-01-16 17:25:22 UTC
 tags:         trunk
-comment:      improved readme (user: rcgill)
+comment:      added cache processing to config; fixed errors in default has
+              (user: rcgill)
