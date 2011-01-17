@@ -57,23 +57,31 @@
   // pqn: package-qualified name
   // pack: package is used internally to reference a package object (since lame JavaScript has reserved words including "package")
   // The integer constant 1 is used in place of true and 0 in place of false.
+
+  var
+    //bring in the backdraft documentation generating machinery (stripped during builds)
+    bd= {
+      docGen: 
+        // Documentation generator hook; facilitates generating documentation for named entities that have 
+        // no place in normal JavaScript code such as keyword arguments, overload function signatures, and types.
+        // 
+        // bd.docGen has no actual run-time function; if called it simply execute a no-op. All bd.doc
+        // calls are removed by the Backdraft build utility (and/or other intelligent compilers) for
+        // release versions of the code.  See the ALTOVISO js-proc manual for further details.
+        noop
+    },
+
+    // this will be the global require function; define it immediately so we can start hanging things off of it
+    req= function(
+      config,       //(object, optional) hash of configuration properties
+      dependencies, //(array of commonjs.moduleId, optional) list of modules to be loaded before applying callback 
+      callback      //(function, optional) lamda expression to apply to module values implied by dependencies
+    ) {
+      return contextRequire(config, dependencies, callback, 0, req);
+    };
+  
+  req.has= has= userConfig.has || this.has || has;
  
-  // the loader can be defined exactly once; look for global define which is the symbol AMD loaders are
-  // *required* to define (as opposed to require, which is optional)
-  if (has("loader-node")) {
-    if (global.define) {
-      console.log("global define already defined; did you try to load multiple AMD loaders?");
-      return;
-    }
-  } else {
-    if (this.define) {
-      console.error("global define already defined; did you try to load multiple AMD loaders?");
-      return;
-    }
-  }
-
-  has= userConfig.has || this.has || has;
-
   var
     // define a minimal library to help build the loader
     noop= function() {
@@ -134,44 +142,7 @@
     arrived= {},
     nonmodule= {},
 
-    //bring in the backdraft documentation generating machinery (stripped during builds)
-    bd= {
-      docGen: 
-        // Documentation generator hook; facilitates generating documentation for named entities that have 
-        // no place in normal JavaScript code such as keyword arguments, overload function signatures, and types.
-        // 
-        // bd.docGen has no actual run-time function; if called it simply execute a no-op. All bd.doc
-        // calls are removed by the Backdraft build utility (and/or other intelligent compilers) for
-        // release versions of the code.  See the ALTOVISO js-proc manual for further details.
-        noop
-    },
-
     // begin defining the loader
-
-    req= function(
-      config,       //(object, optional) hash of configuration properties
-      dependencies, //(array of commonjs.moduleId, optional) list of modules to be loaded before applying callback 
-      callback      //(function, optional) lamda expression to apply to module values implied by dependencies
-    ) {
-      ///
-      // Loads the modules given by dependencies, and then applies callback (if any) to the values of those modules. //The
-      // values of the modules given in dependencies are passed as arguments.
-      //
-      // If config is provided, then adjust the loaders configuration as given by config hash before proceeding. 
-      //
-      //note
-      // `require([], 0)` will cause the loader to check to see if it can execute more modules; this can be useful for build systems.
-      bd.docGen("overload",
-        function(
-          moduleId //(commonjs.moduleId) the module identifier of which value to return
-        ) {
-          /// 
-          // Return the module value for the module implied by `moduleId`. //If the implied
-          // module has not been defined, then `undefined` is returned.
-        }
-      );
-      return contextRequire(config, dependencies, callback, 0, req);
-    },
 
     pathTransforms=
       // list of functions from URL(string) to URL(string)
@@ -199,8 +170,49 @@
       // a "program" to apply paths; see computeMapProg
       [],
 
-    // configuration machinery
+    modules=
+      // A hash:(pqn) --> (module-object). module objects are simple JavaScript objects with the
+      // following properties:
+      // 
+      //   pid: the package identifier to which the module belongs; "" indicates the system or default package
+      //   id: the module identifier without the package identifier
+      //   pqn: the full context-qualified name
+      //   url: the URL from which the module was retrieved
+      //   pack: the package object of the package to which the module belongs
+      //   path: the full module name (package + path) resolved with respect to the loader (i.e., mappings have been applied)
+      //   executed: 1 <==> the factory has been executed
+      //   deps: the dependency vector for this module (vector of modules objects)
+      //   def: the factory for this module
+      //   result: the result of the running the factory for this module
+      //   injected: (requested | arrived | nonmodule) the status of the module; nonmodule means the resource did not call define
+      //   ready: 1 <==> all prerequisite fullfilled to execute the module
+      //   load: plugin load function; applicable only for plugins
+      // 
+      // Modules go through several phases in creation:
+      // 
+      // 1. Requested: some other module's definition contains the requested module in
+      //    its dependency vector or executing code explicitly demands a module via req.require.
+      // 
+      // 2. Injected: a script element has been appended to the head element demanding the resource implied by the URL
+      // 
+      // 3. Loaded: the resource injected in [2] has been evaluated.
+      // 
+      // 4. Defined: the resource contained a define statement that advised the loader
+      //    about the module. Notice that some resources may just contain a bundle of code
+      //    and never formally define a module via define
+      // 
+      // 5. Evaluated: the module was defined via define and the loader has evaluated the factory and computed a result.
+      {},
 
+    cache=
+      ///
+      // hash:(pqn)-->(function)
+      ///
+      // Gives the contents of a cached resource; function should cause the same actions as if the given pqn was downloaded
+      // and evaluated by the host environment
+      {},
+
+    // configuration machinery
 
     computeMapProg= function(map) {
       // This routine takes a map target-prefix(string)-->replacement(string) into a vector 
@@ -233,9 +245,6 @@
       packages[name]= packageInfo;
       packageMap[name]= name;
     },
-
-    // a sink for any hasMap config passed in; has affect iff has.hasMap exists
-    hasMap= has.hasMap || {},
 
     config= function(config, booting) {
       // mix config into require, but don't trash the pathTransforms
@@ -275,14 +284,10 @@
       packageMapProg= computeMapProg(mix(packageMap, config.packageMap));
 
       // push in any new cache values
-      for (p in config.cache) {
-        cache[p]= config.cache[p];
-      }
+      mix(cache, config.cache);
 
       // push in any new hasMap values
-      for (p in config.hasMap) {
-        hasMap[p]= config.hasMap[p];
-      }
+      mix(has.hasMap || {}, config.hasMap);
 
       if (!booting) {
         (config.load || config.callback) && req(config.load || [], config.callback);
@@ -290,16 +295,27 @@
       }
     };
 
-  // configure the laoder; let client-set switches override defaults
-  req.has= has;
-  mix(req, defaultConfig);
+  // configure the loader; let the user override defaults
+  config(defaultConfig, 1);
   config(userConfig, 1);
 
-  //
-  // Global Loader API
-  // 
-  // define and require make up the global, public API
-  //
+
+  // the loader can be defined exactly once; look for global define which is the symbol AMD loaders are
+  // *required* to define (as opposed to require, which is optional)
+  if (has("loader-node")) {
+    if (isFunction(global.define)) {
+      console.log("global define already defined; did you try to load multiple AMD loaders?");
+      return;
+    }
+  } else {
+    if (isFunction(this.define)) {
+      console.error("global define already defined; did you try to load multiple AMD loaders?");
+      return;
+    }
+  }
+
+
+  // build the basic loader
   var 
     injectDependencies= function(module) {
       forEach(module.deps, injectModule);
@@ -350,67 +366,8 @@
         module.require= mix(result, req);
       }
       return result;
-    };
+    },
 
-  if (has("loader-traceApi")) {
-    // these make debugging nice
-    var
-      symbols= 
-        {},
-
-      symbol= function(name) {
-        return symbols[name] || (symbols[name]= {value:name});    
-      };
-
-    requested =symbol("requested");
-    arrived   =symbol("arrived");
-    nonmodule =symbol("not-a-module");
-  }
-
-  // at this point req===require is configured; define the loader
-  var
-    modules=
-      // A hash:(pqn) --> (module-object). module objects are simple JavaScript objects with the
-      // following properties:
-      // 
-      //   pid: the package identifier to which the module belongs; "" indicates the system or default package
-      //   id: the module identifier without the package identifier
-      //   pqn: the full context-qualified name
-      //   url: the URL from which the module was retrieved
-      //   pack: the package object of the package to which the module belongs
-      //   path: the full module name (package + path) resolved with respect to the loader (i.e., mappings have been applied)
-      //   executed: 1 <==> the factory has been executed
-      //   deps: the dependency vector for this module (vector of modules objects)
-      //   def: the factory for this module
-      //   result: the result of the running the factory for this module
-      //   injected: (requested | arrived | nonmodule) the status of the module; nonmodule means the resource did not call define
-      //   ready: 1 <==> all prerequisite fullfilled to execute the module
-      //   load: plugin load function; applicable only for plugins
-      // 
-      // Modules go through several phases in creation:
-      // 
-      // 1. Requested: some other module's definition contains the requested module in
-      //    its dependency vector or executing code explicitly demands a module via req.require.
-      // 
-      // 2. Injected: a script element has been appended to the head element demanding the resource implied by the URL
-      // 
-      // 3. Loaded: the resource injected in [2] has been evaluated.
-      // 
-      // 4. Defined: the resource contained a define statement that advised the loader
-      //    about the module. Notice that some resources may just contain a bundle of code
-      //    and never formally define a module via define
-      // 
-      // 5. Evaluated: the module was defined via define and the loader has evaluated the factory and computed a result.
-      {},
-
-    cache= 
-      ///
-      // hash:(pqn)-->(function)
-      ///
-      // Gives the contents of a cached script; function should cause the same actions as if the given pqn was downloaded
-      // and evaluated by the host environment
-      req.cache= req.cache || {},
-  
     execQ=
       ///
       // The list of modules that need to be evaluated.
@@ -720,6 +677,23 @@
         onLoad();
       }
     };
+
+
+  if (has("loader-traceApi")) {
+    // these make debugging nice
+    var
+      symbols= 
+        {},
+
+      symbol= function(name) {
+        return symbols[name] || (symbols[name]= {value:name});    
+      };
+
+    requested =symbol("requested");
+    arrived   =symbol("arrived");
+    nonmodule =symbol("not-a-module");
+  }
+
 
   if (has("loader-injectApi")) {
     var
@@ -1224,8 +1198,9 @@
     };
   
   if (has("loader-node")) {
+    // publish require as a property of define; the node bootstrap will export this and then delete it
+    def.require= req;
     global.define= def;
-    exports.require= req;
   } else {
     define= def;
     require= req;
@@ -1238,7 +1213,7 @@
   }
 
   if (has("loader-injectApi")) {
-    req(userConfig.load || req.autoLoad || [], userConfig.callback);
+    req(req.load || req.autoLoad || [], userConfig.callback);
     userConfig.ready && loadQ.push(userConfig.ready);
   } else {
     // the cache holds a map from pqn to {deps, def} of all modules that should be instantiated

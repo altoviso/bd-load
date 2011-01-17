@@ -3,9 +3,9 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     f1be9a81b602dbb6653681e8882bb4c175960f5e 2011-01-15 22:37:25 UTC
-parent:       a20e072ecda5d63154aff03ad8810d81d5ff8645 2011-01-12 05:06:04 UTC
-child:        831b76fa152c09c85ba68e257a910511a9266584 2011-01-16 17:25:22 UTC
+checkout:     831b76fa152c09c85ba68e257a910511a9266584 2011-01-16 17:25:22 UTC
+parent:       f1be9a81b602dbb6653681e8882bb4c175960f5e 2011-01-15 22:37:25 UTC
+child:        2ab4e6fcc2f4bd2e6caf98e164133dfb7250378e 2011-01-17 21:20:47 UTC
 tags:         trunk
-comment:      added cache processing to config; fixed errors in default has
-              (user: rcgill)
+comment:      several improvements for use with node; moved things around in
+              require.js; improved config processing (user: rcgill)
