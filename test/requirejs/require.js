@@ -81,6 +81,8 @@
     };
   
   req.has= has= userConfig.has || this.has || has;
+  req.vender= "altoviso";
+  req.version= "1.0-beta";
  
   var
     // define a minimal library to help build the loader
@@ -348,6 +350,8 @@
         result= function(a1, a2, a3) {
           return contextRequire(a1, a2, a3, module, result);
         };
+        //TODO: delete the next line after sure it's not assumed in code in the wild
+        //module.require= mix(result, req);
         result.nameToUrl= function(name, ext) {
           return nameToUrl(name, ext, module);
         };
@@ -363,7 +367,6 @@
              setDel(injectedUrls, module.url);
           };
         }
-        module.require= mix(result, req);
       }
       return result;
     },
@@ -432,9 +435,9 @@
       return result;
     },
 
-    getModuleInfo= function(mid, referenceModule, packages, modules, baseUrl, pageUrl, packageMapProg, pathsMapProg, pathTransforms) {
-      // arguments are passed instead of using lexical variables in containing closure so that this function my be used independent
-      // of bdLoad (e.g., in bdBuild)
+    getModuleInfo= function(mid, referenceModule, packages, modules, baseUrl, pageUrl, packageMapProg, pathsMapProg, pathTransforms, alwaysCreate) {
+      // arguments are passed instead of using lexical variables so that this function my be used independent of bdLoad (e.g., in bdBuild)
+      // alwaysCreate is useful in this case so that getModuleInfo never returns references to its own modules
       var pid, pack, pqn, mapProg, mapItem, path, url;
       if (/(^\/)|(\:)|(\.[^\/]+$)/.test(mid)) {
         // absolute path or prototcol or file type was given; resolve relative to page location.pathname
@@ -461,7 +464,7 @@
           mid= path;
         }
         pqn= pid + "*" + mid;
-        if (modules[pqn]) {
+        if (!alwaysCreate && modules[pqn]) {
           return modules[pqn];
         }
       }
@@ -502,15 +505,15 @@
         // name was <plugin-module>!<plugin-resource>
         plugin= getModule(match[1], referenceModule),
         pluginResource= match[2];
-        pqn= plugin.pqn + "!" + pluginResource;
-        return modules[pqn] || (modules[pqn]= {plugin:plugin, mid:pluginResource, req:createRequire(referenceModule), pqn:pqn});
+        pqn= plugin.pqn + "!" + (referenceModule ? referenceModule.pqn + "!" : "") + pluginResource;
+        return modules[pqn] || (modules[pqn]= {plugin:plugin, mid:pluginResource, req:(referenceModule ? createRequire(referenceModule) : req), pqn:pqn});
       } else {
         result= getModuleInfo(mid, referenceModule, packages, modules, req.baseUrl, req.pageUrl, packageMapProg, pathsMapProg, pathTransforms);
         return modules[result.pqn] || (modules[result.pqn]= result);
       }
     },
 
-    nameToUrl= function(name, ext, referenceModule) {
+    nameToUrl= req.nameToUrl= function(name, ext, referenceModule) {
       // slightly different algorithm depending upon whether or not name contains
       // a filetype. This is a requirejs artifact which we don't like.
       var
@@ -723,11 +726,15 @@
         } else {
           var plugin= module.plugin;
           if (!plugin.load) {
-            plugin.loadQ= [];
-            plugin.load= function(require, id, callback) {
-              plugin.loadQ.push([require, id, callback]);
-            };
-            injectModule(plugin);
+            if (plugin.executed) {
+              plugin.load= plugin.result.load;
+            } else {
+              plugin.loadQ= [];
+              plugin.load= function(require, id, callback) {
+                plugin.loadQ.push([require, id, callback]);
+              };
+              injectModule(plugin);
+            }
           }
           setIns(waiting, pqn);
           plugin.load(module.req, module.mid, onload);
@@ -1117,10 +1124,51 @@
     req.onError= req.onError || noop;
   }
 
+  var def= function(
+    mid,          //(commonjs.moduleId, optional) list of modules to be loaded before running factory
+    dependencies, //(array of commonjs.moduleId, optional)
+    factory       //(any)
+  ) {
+    ///
+    // Advises the loader of a module factory. //Implements http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition.
+    ///
+    //note
+    // CommonJS factory scan courtesy of James Burke at http://requirejs.org
+
+    var 
+      arity= arguments.length,
+      args= 0,
+      defaultDeps= ["require", "exports", "module"];
+    if (arity==3 && dependencies==0) {
+      // immediate signature
+      execModule(defineModule(getModule(mid), [], factory, 0));
+      return;
+    }
+    if (has("loader-amdFactoryScan")) {
+      if (arity==1) {
+        dependencies= [];
+        mid.toString()
+          .replace(/(\/\*([\s\S]*?)\*\/|\/\/(.*)$)/mg, "")
+          .replace(/require\(["']([\w\!\-_\.\/]+)["']\)/g, function (match, dep) {
+            dependencies.push(dep);
+          });
+        args= [0, defaultDeps.concat(dependencies), mid];
+      }
+    }
+    if (!args) {
+      args= arity==1 ? [0, defaultDeps, mid] :
+                       (arity==2 ? (isArray(mid) ? [0, mid, dependencies] : [mid, defaultDeps, dependencies]) :
+                                                   [mid, dependencies, factory]);
+    }
+    if (has("loader-traceApi")) {
+      req.trace("loader-define", args.slice(0, 2));
+    }
+    defQ.push(args);
+  };
+  
   if (has("loader-createHasModule")) {
     mix(getModule("has"), {injected:arrived, deps:[], executed:1, result:has});
   }
-
 
   if (has("loader-publish-privates")) {
     mix(req, {
@@ -1155,48 +1203,6 @@
     });
   }
 
-  var def= function(
-      mid,          //(commonjs.moduleId, optional) list of modules to be loaded before running factory
-      dependencies, //(array of commonjs.moduleId, optional)
-      factory       //(any)
-    ) {
-      ///
-      // Advises the loader of a module factory. //Implements http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition.
-      ///
-      //note
-      // CommonJS factory scan courtesy of James Burke at http://requirejs.org
-  
-      var 
-        arity= arguments.length,
-        args= 0,
-        defaultDeps= ["require", "exports", "module"];
-      if (arity==3 && dependencies==0) {
-        // immediate signature
-        execModule(defineModule(getModule(mid), [], factory, 0));
-        return;
-      }
-      if (has("loader-amdFactoryScan")) {
-        if (arity==1) {
-          dependencies= [];
-          mid.toString()
-            .replace(/(\/\*([\s\S]*?)\*\/|\/\/(.*)$)/mg, "")
-            .replace(/require\(["']([\w\!\-_\.\/]+)["']\)/g, function (match, dep) {
-              dependencies.push(dep);
-            });
-          args= [0, defaultDeps.concat(dependencies), mid];
-        }
-      }
-      if (!args) {
-        args= arity==1 ? [0, defaultDeps, mid] :
-                         (arity==2 ? (isArray(mid) ? [0, mid, dependencies] : [mid, defaultDeps, dependencies]) :
-                                                     [mid, dependencies, factory]);
-      }
-      if (has("loader-traceApi")) {
-        req.trace("loader-define", args.slice(0, 2));
-      }
-      defQ.push(args);
-    };
-  
   if (has("loader-node")) {
     // publish require as a property of define; the node bootstrap will export this and then delete it
     def.require= req;
@@ -1249,6 +1255,7 @@
     timeout:0,
     autoLoad:["config"],
     traceSet:{
+      // these are listed so its simple to turn them on/off while debugging bdLoad
       "loader-define":0,
       "loader-runFactory":0,
       "loader-execModule":0,
@@ -1259,7 +1266,7 @@
 
   // has.js
   (function() {
-  // if has is not provided, define a trivial implementation
+    // if has is not provided, define a naive implementation
     var has= function(name) { 
       return has.hasMap[name]; 
     };
