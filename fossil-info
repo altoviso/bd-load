@@ -3,9 +3,9 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     2262d3f7208d6bf5795066ecdb2694bbf9c2520d 2011-01-18 05:39:36 UTC
-parent:       2ab4e6fcc2f4bd2e6caf98e164133dfb7250378e 2011-01-17 21:20:47 UTC
-child:        0716fb9e7102fcc9a75f6c7229a83c01c35e327f 2011-01-21 09:15:57 UTC
+checkout:     0716fb9e7102fcc9a75f6c7229a83c01c35e327f 2011-01-21 09:15:57 UTC
+parent:       2262d3f7208d6bf5795066ecdb2694bbf9c2520d 2011-01-18 05:39:36 UTC
+child:        9fa0acbb8565841c97b54257ee7eb54db67f4f92 2011-01-21 09:41:21 UTC
 tags:         trunk
-comment:      upgraded plugins to current dojo equivalents; fixed handling of
-              config.load (user: rcgill)
+comment:      fixed bugs in CJS exports, config.ready handling, checkComplete;
+              improved library functions and commentary (user: rcgill)
