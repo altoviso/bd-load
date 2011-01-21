@@ -1,0 +1,23 @@
+{
+  "name": "bdLoad",
+  "version": "0.8.0",
+  "author": "Rawld Gill",
+  "description": "The backdraft loader--an AMD-compliant loader with has.js integration, enhanced debugging support, and other powerful features that's also small and fast.",
+  "directories": {
+    "lib": "lib"
+  },
+  "main":"node",
+  "licenses": [
+     {
+         "type": "BSD",
+         "url": "https://github.com/altoviso/bdLoad/blob/master/LICENSE.txt"
+     }
+  ],
+  "repository": {
+    "type":"git",
+    "url":"https://github.com/altoviso/bdLoad"
+  },
+  "bugs": "http://bdframework.org/repo/reportlist",
+  "keywords": ["JavaScript", "backdraft", "AsynchronousDefinition", "commonjs", "node", "Dojo", "Toolkit"],
+  "homepage": "http://bdframework.org"
+}
