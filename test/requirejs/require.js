@@ -270,8 +270,8 @@
       packageMap[name]= name;
     },
 
-    doWork= function(load, callback, onLoadCallback) {
-      ((load && load.length) || callback) && req(load || [], callback || noop);
+    doWork= function(deps, callback, onLoadCallback) {
+      ((deps && deps.length) || callback) && req(deps || [], callback || noop);
       onLoadCallback && req.addOnLoad(onLoadCallback);
     },
 
@@ -279,10 +279,7 @@
       // mix config into require, but don't trash the pathTransforms
       var p, i, transforms;
 
-      if (has("loader-requirejsApi")) {
-        config.deps && (config.load= config.deps);
-        //note: bdLoad ignores requirejs waitSecond; change your code to use "timeout" if required
-      }
+      //note: bdLoad ignores requirejs waitSecond; change your code to use "timeout" if required
 
       // push config into require, but don't step on certain properties that are expected and/or
       // require special processing; notice that client code can use config to hold client
@@ -319,7 +316,7 @@
       mix(has.hasMap || {}, config.hasMap);
 
       if (!booting) {
-        doWork(config.load, config.callback, config.ready);
+        doWork(config.deps, config.callback, config.ready);
       }
     };
 
@@ -431,8 +428,12 @@
         segment;
       while (parts.length) {
         segment= parts.shift();
-        if (segment==".." && result.length && result[result.length-1]!="..") {
-          result.pop();
+        if (segment=="..") {
+          if (result.length && result[result.length-1].charAt(0)!=".") {
+            result.pop();
+          } else {
+            result.push("..");
+          }
         } else if (segment!="." || (!result.length && !trimLeadingDots)) {
           result.push(segment);
         }
@@ -932,7 +933,7 @@
           onLoad= function(e) {
             e= e || window.event;
             var node= e.target || e.srcElement;
-            if (e.type==="load" || /complete|loaded/.testy(node.readyState)) {
+            if (e.type==="load" || /complete|loaded/.test(node.readyState)) {
               disconnector();
               callback && callback.call();
             }
@@ -955,7 +956,7 @@
             req.baseUrl= src.substring(0, match.index) || "./";
             dataMain= scripts[i].getAttribute("data-main");
             if (dataMain) {
-              req.load= req.load || [dataMain];
+              req.deps= req.deps || [dataMain];
             }
             // remember the base node so other machinery can use it to pass parameters (e.g., djConfig)
             req.baseNode= scripts[i];
@@ -1231,7 +1232,7 @@
     // publish require as a property of define; the node bootstrap will export this and then delete it
     def.require= req;
     global.define= def;
-    req.load= req.load || [];
+    req.deps= req.deps || [];
   } else {
     define= def;
     require= req;
@@ -1244,11 +1245,11 @@
     req.def= define;
   } else {
     onLoadCallback= req.ready;
-    req.load= req.load || ["config"];
+    req.deps= req.deps || ["config"];
   }
 
   if (has("loader-injectApi")) {
-    doWork(req.load, req.callback, onLoadCallback);
+    doWork(req.deps, req.callback, onLoadCallback);
   } else {
     // the cache holds a map from pqn to {deps, def} of all modules that should be instantiated
     // in this mode, path and url are useless, and therefore not initialized
