@@ -3,9 +3,8 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     46b5cd0a8a27e1f26f1a7a94ad35b805593c15be 2011-01-25 06:22:37 UTC
-parent:       c5be8510d5240a5fc9a3202529b074b6d957b408 2011-01-24 09:19:18 UTC
-child:        029124514e596de4dd900f680c51b815b80e95e5 2011-01-26 10:24:40 UTC
+checkout:     029124514e596de4dd900f680c51b815b80e95e5 2011-01-26 10:24:40 UTC
+parent:       46b5cd0a8a27e1f26f1a7a94ad35b805593c15be 2011-01-25 06:22:37 UTC
 tags:         trunk
-comment:      converted config.load to config.deps for requirejs compat; fixed
-              ./../some/more bug in compact path (user: rcgill)
+comment:      added immediate eval of plugin resources for existing plugins
+              (user: rcgill)
