@@ -3,8 +3,7 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     8b557f43b0b5c4a98f5e43ed93760525a9a3bd6d 2011-01-28 10:24:57 UTC
-parent:       029124514e596de4dd900f680c51b815b80e95e5 2011-01-26 10:24:40 UTC
+checkout:     50d2c6a05770657e4455c9823058aea0966d5ce5 2011-01-31 09:49:45 UTC
+parent:       8b557f43b0b5c4a98f5e43ed93760525a9a3bd6d 2011-01-28 10:24:57 UTC
 tags:         trunk
-comment:      added real has.js impl as the default impl; fixed bug in pageUrl
-              calc (user: rcgill)
+comment:      small performance enhancement to getModuleInfo (user: rcgill)
