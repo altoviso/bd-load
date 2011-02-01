@@ -343,7 +343,7 @@
     },
   
     contextRequire= function(a1, a2, a3, referenceModule, contextRequire) {
-      var module;
+      var module, syntheticMid;
       if (isString(a1)) {
         // signature is (moduleId)
         module= getModule(a1, referenceModule);
@@ -362,10 +362,25 @@
       }
       if (isArray(a1)) {
         // signature is (requestList [,callback])
-        module= getModule(uid());
-        execQ.push(module);
-        injectDependencies(defineModule(module, a1, a2 || noop));
-        checkComplete();
+
+        // resolve the request list with respect to the reference module
+        for (var i= 0; i<a1.length; i++) {
+          a1[i]= getModule(a1[i], referenceModule);
+        }
+
+        // construct a synthetic module to control execution of the requestList, and, optionally, callback
+        syntheticMid= uid();
+        module= mix(makeModuleInfo("", syntheticMid, "*"+syntheticMid, 0, "", ""), {
+          injected:arrived,
+          deps:a1,
+          def:a2||noop
+        });
+        injectDependencies(module);
+        // try to immediately execute
+        if (execModule(module)===abortExec) {
+          // some deps weren't on board; therefore, push into the execQ
+          execQ.push(module);
+        }
       }
       return contextRequire;
     },
@@ -539,7 +554,7 @@
         pqn= plugin.pqn + "!" + (referenceModule ? referenceModule.pqn + "!" : "") + pluginResource;
         return modules[pqn] || (modules[pqn]= {plugin:plugin, mid:pluginResource, req:(referenceModule ? createRequire(referenceModule) : req), pqn:pqn});
       } else {
-        result= getModuleInfo(mid, referenceModule, packages, modules, req.baseUrl, req.pageUrl, packageMapProg, pathsMapProg, pathTransforms);
+        result= getModuleInfo(mid, referenceModule, packages, modules, req.baseUrl, ".", packageMapProg, pathsMapProg, pathTransforms);
         return modules[result.pqn] || (modules[result.pqn]= result);
       }
     },
@@ -549,7 +564,7 @@
       // a filetype. This is a requirejs artifact which we don't like.
       var
         match= name.match(/(.+)(\.[^\/]+)$/),
-        url= getModuleInfo(match && match[1] || name, referenceModule, packages, modules, req.baseUrl, req.pageUrl, packageMapProg, pathsMapProg, pathTransforms).url;
+        url= getModuleInfo(match && match[1] || name, referenceModule, packages, modules, req.baseUrl, ".", packageMapProg, pathsMapProg, pathTransforms).url;
       // recall, getModuleInfo always returns a url with a ".js" suffix; therefore, we've got to trim it
       return url.substring(0, url.length-3) + (ext ? ext : (match ? match[2] : ""));
     },
@@ -564,23 +579,19 @@
     cjsExportsModule= mix(getModule("exports"), cjsModuleInfo),
     cjsModuleModule= mix(getModule("module"), cjsModuleInfo),
 
+    // this is a flag to say at least one factory was run during a deps tree
+    // traversal
+    ranFactory= 0,
+
     runFactory= function(pqn, factory, args, cjs) {
       if (has("loader-traceApi")) {
         req.trace("loader-runFactory", [pqn]);
       }
+      ranFactory= 1;
       return isFunction(factory) ? (factory.apply(null, args) || (cjs && cjs.exports)) : factory;
     },
 
-    makeCjs= function(module) {
-      return module.cjs || (module.cjs= {
-        id: module.path,
-        uri: module.url,
-        exports: (module.result= {}),
-        setExports: function(exports) {
-          module.cjs.exports= exports;
-        }
-      });
-    },
+    abortExec= {},
 
     evalOrder= 0,
 
@@ -589,10 +600,13 @@
     ) {
       // run the dependency vector, then run the factory for module
       if (!module.executed) {
+        if (!module.def) {
+          return abortExec;
+        }
         var
           pqn= module.pqn,
           deps= module.deps || [],
-          arg, 
+          arg, argResult,
           args= [], 
           i= 0;
 
@@ -600,14 +614,24 @@
           req.trace("loader-execModule", [pqn]);
         }
 
-        // guard against circular dependencies
+        // for circular dependencies, assume the first module encountered was executed OK
+        // modules that circularly depend on a module that has not run its factory will get
+        // the premade cjs.exports===module.result. They can take a reference to this object and/or
+        // add properties to it. When the module finally runs its factory, the factory can 
+        // read/write/replace this object. Notice that so long as the object isn't replaced, any
+        // reference taken earlier while walking the deps list is still valid.
         module.executed= 1;
         while (i<deps.length) {
           arg= deps[i++];
-          args.push((arg===cjsRequireModule) ? createRequire(module) :
-                                               ((arg===cjsExportsModule) ? makeCjs(module).exports :
-                                                                           ((arg===cjsModuleModule) ? makeCjs(module) :
-                                                                                                      execModule(arg))));
+          argResult= ((arg===cjsRequireModule) ? createRequire(module) :
+                                                 ((arg===cjsExportsModule) ? module.exports :
+                                                                             ((arg===cjsModuleModule) ? module :
+                                                                                                        execModule(arg))));
+          if (argResult===abortExec) {
+            module.executed= 0;
+            return abortExec;
+          }
+          args.push(argResult);
         }
         if (has("loader-catchApi")) {
           try {
@@ -637,71 +661,22 @@
       return module.result;
     },
 
-    checkCompleteTimer= 0,
-    checkComplete= function() {
-      if (has("loader-throttleCheckComplete")) {
-        if (isEmpty(waiting)) {
-          // probably trying to get something like require(["plugin!some/module"]) which triggers
-          // require(["some/other/module"]) from within the plugin that is already on board; therefore
-          // to an immediate check complete to give the plugin a chance to fully resolve the request
-          // immediately
-          doCheckComplete(); 
-        } else if (!checkCompleteTimer) {
-          checkCompleteTimer= setInterval(
-            function() { 
-              doCheckComplete(); 
-            }, 50);
-        }
-      } else {
-        doCheckComplete();
-      }
-    },
-
     checkCompleteRecursiveGuard= 0,
-    doCheckComplete= function() {
+
+    checkComplete= function() {
       if (checkCompleteRecursiveGuard) {
         return;
       }
       checkCompleteRecursiveGuard= 1;
 
-      var 
-        readySet= {},
-        rerun= 1,
-        notReadySet, visited, module, i,
-        ready= function(module) {
-          var pqn= module.pqn;
-          if (readySet[pqn] || visited[pqn]) {
-            return 1;
-          }
-          visited[pqn]= 1;
-          if ((!module.executed && !module.def) || notReadySet[pqn]) {
-            notReadySet[module.pqn]= 1;
-            return 0;
-          }
-          for (var deps= module.deps, i= 0; deps && i<deps.length;) {
-            if (!ready(deps[i++])) {
-              notReadySet[pqn]= 1;
-              return 0;
-            }
-          }
-          return 1;
-        };
-
-      while (rerun) {
-        notReadySet= {};
-        rerun= 0;
-        for (i= 0; i<execQ.length;) {
-          visited= {};
-          module= execQ[i];
-          if (module.executed) {
+      // keep going through the execQ as long as at least one factory is executed
+      ranFactory= 1;
+      while (ranFactory) {
+        ranFactory= 0;
+        for (var result, i= 0; i<execQ.length;) {
+          result= execModule(execQ[i]);
+          if (result!==abortExec) {
             execQ.splice(i, 1);
-          } else if (ready(module)) {
-            readySet[module.pqn]= 1;
-            execModule(module);
-            execQ.splice(i, 1);
-            // executing a module may result in a plugin calling load which
-            // may result in yet another module becoming ready; therefore,
-            rerun= 1;
           } else {
             i++;
           }
@@ -709,10 +684,6 @@
       }
 
       checkCompleteRecursiveGuard= 0;
-      if (!execQ.length && checkCompleteTimer) {
-        clearInterval(checkCompleteTimer);
-        checkCompleteTimer= 0;
-      }
       if (has("loader-pageLoadApi")) {
         onLoad();
       }
@@ -774,7 +745,9 @@
                 plugin.loadQ.push([require, id, callback]);
               };
               injectModule(plugin);
-              execQ.push(plugin);
+              // try to get plugins executed ASAP since they are presumably needed
+              // to load dependencies for other modules
+              execQ.unshift(plugin);
             }
           }
           !immediate && setIns(waiting, pqn);
@@ -840,7 +813,7 @@
         // The queue of define arguments sent to loader.
         [],
   
-      defineModule= function(module, deps, def, url) {
+      defineModule= function(module, deps, def) {
         if (has("loader-traceApi")) {
           req.trace("loader-defineModule", [module, deps]);
         }
@@ -852,9 +825,16 @@
         }
         mix(module, {
           injected: arrived,
-          url: url,
           deps: deps,
-          def: def
+          def: def,
+          cjs: {
+            id: module.path,
+            uri: module.url,
+            exports: (module.result= {}),
+            setExports: function(exports) {
+              module.cjs.exports= exports;
+            }
+          }
         });
 
         // resolve deps with respect to pid
@@ -875,12 +855,13 @@
         //defQ is an array of [id, dependencies, factory]
         var
           definedModules= [],
-          args;
+          module, args;
         while (defQ.length) {
           args= defQ.shift();
           // explicit define indicates possible multiple modules in a single file; delay injecting dependencies until defQ fully
           // processed since modules earlier in the queue depend on already-arrived modules that are later in the queue
-          definedModules.push(defineModule(args[0] && getModule(args[0]) || referenceModule, args[1], args[2], referenceModule && referenceModule.url));
+          module= args[0] && getModule(args[0]) || referenceModule;
+          definedModules.push(defineModule(module, args[1], args[2]));
         }
         forEach(definedModules, injectDependencies);
       };
@@ -1180,7 +1161,7 @@
       defaultDeps= ["require", "exports", "module"];
     if (arity==3 && dependencies==0) {
       // immediate signature
-      execModule(defineModule(getModule(mid), [], factory, 0));
+      execModule(defineModule(getModule(mid), [], factory));
       return;
     }
     if (has("loader-amdFactoryScan")) {
@@ -1203,7 +1184,8 @@
       req.trace("loader-define", args.slice(0, 2));
     }
     defQ.push(args);
-    isEmpty(waiting) && runDefQ();
+    // if given a mid, go ahead and define the module
+    args[0] && runDefQ();
   };
   
   if (has("loader-createHasModule")) {
@@ -1296,7 +1278,6 @@
     vendor:"altoviso.com",
     version:"1.0-beta",
     baseUrl:"",
-    pageUrl:location.pathname.match(/(.+)\/[^\/]+$/)[1],
     host:"browser",
     isBrowser:1,
     timeout:0,
@@ -1334,7 +1315,6 @@
         "loader-requirejsApi":1,
         "loader-createHasModule":1,
         "loader-amdFactoryScan":1,
-        "loader-throttleCheckComplete":1,
         "loader-publish-privates":1,
         "native-xhr":!!this.XMLHttpRequest
       },
