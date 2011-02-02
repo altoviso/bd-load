@@ -3,9 +3,8 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     207841adc39351f76f30d725790534ba834a106d 2011-02-01 09:02:55 UTC
-parent:       50d2c6a05770657e4455c9823058aea0966d5ce5 2011-01-31 09:49:45 UTC
+checkout:     c27e71b070bcd8d6ce5c235915a3f085df5157ab 2011-02-02 10:36:45 UTC
+parent:       207841adc39351f76f30d725790534ba834a106d 2011-02-01 09:02:55 UTC
 tags:         trunk
-comment:      reworked check complete algorithm to leverage execModule;
-              require execs immediately iff possible; plugins get automatic
-              first priority; pageUrl=.; (user: rcgill)
+comment:      changed plugin load signature added toUrl to comply with cjs
+              plugin spec; added toAbsMid for optimization (user: rcgill)
