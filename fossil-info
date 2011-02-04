@@ -3,8 +3,8 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     c27e71b070bcd8d6ce5c235915a3f085df5157ab 2011-02-02 10:36:45 UTC
-parent:       207841adc39351f76f30d725790534ba834a106d 2011-02-01 09:02:55 UTC
+checkout:     dd9e98c73c874d5cb606fd0efbd8a363da71f959 2011-02-04 10:01:37 UTC
+parent:       c27e71b070bcd8d6ce5c235915a3f085df5157ab 2011-02-02 10:36:45 UTC
 tags:         trunk
-comment:      changed plugin load signature added toUrl to comply with cjs
-              plugin spec; added toAbsMid for optimization (user: rcgill)
+comment:      fixed text plugin arg order for node; fixed allowing module
+              values to be falsy (user: rcgill)

@@ -603,7 +603,7 @@
     ) {
       // run the dependency vector, then run the factory for module
       if (!module.executed) {
-        if (!module.def) {
+        if (typeof module.def=="undefined") {
           return abortExec;
         }
         var
