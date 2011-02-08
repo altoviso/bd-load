@@ -3,9 +3,8 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     fe6763a5617d9417ac175adc6d47dfefe2360e11 2011-02-08 10:27:51 UTC
-parent:       dd9e98c73c874d5cb606fd0efbd8a363da71f959 2011-02-04 10:01:37 UTC
-child:        38013e9d55d1cb57068ec54565c844ab66ed1101 2011-02-08 10:48:41 UTC
+checkout:     38013e9d55d1cb57068ec54565c844ab66ed1101 2011-02-08 10:48:41 UTC
+parent:       fe6763a5617d9417ac175adc6d47dfefe2360e11 2011-02-08 10:27:51 UTC
+child:        daae54a083dc48247d75022bac55b414be4bd042 2011-02-09 10:20:54 UTC
 tags:         trunk
-comment:      added IE6-8 support; fixed typo in getModule that crept in
-              during bdBuild mods (user: rcgill)
+comment:      added dijit tests (user: rcgill)
