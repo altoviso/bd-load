@@ -3,8 +3,9 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     dd9e98c73c874d5cb606fd0efbd8a363da71f959 2011-02-04 10:01:37 UTC
-parent:       c27e71b070bcd8d6ce5c235915a3f085df5157ab 2011-02-02 10:36:45 UTC
+checkout:     fe6763a5617d9417ac175adc6d47dfefe2360e11 2011-02-08 10:27:51 UTC
+parent:       dd9e98c73c874d5cb606fd0efbd8a363da71f959 2011-02-04 10:01:37 UTC
+child:        38013e9d55d1cb57068ec54565c844ab66ed1101 2011-02-08 10:48:41 UTC
 tags:         trunk
-comment:      fixed text plugin arg order for node; fixed allowing module
-              values to be falsy (user: rcgill)
+comment:      added IE6-8 support; fixed typo in getModule that crept in
+              during bdBuild mods (user: rcgill)
