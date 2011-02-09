@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	 "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>loading all dojo modules with the standard synchronous loader</title>
+		<script>
+			var start= (new Date()).getTime();
+		</script>
+		<script type="text/javascript" src="../../../dojotoolkit/dojo/dojo.js"></script>
+		<script type="text/javaScript">
+			dojo.require("dojo.fx.easing");
+			dojo.require("dojo.fx.Toggler");
+			dojo.require("dojo.date.stamp");
+			dojo.require("dojo.date.locale");
+			dojo.require("dojo.store.util.SimpleQueryEngine");
+			dojo.require("dojo.store.util.QueryResults");
+			dojo.require("dojo.store.DataStore");
+			dojo.require("dojo.store.JsonRest");
+			dojo.require("dojo.store.Memory");
+			dojo.require("dojo.store.Cache");
+			dojo.require("dojo.store.Observable");
+			dojo.require("dojo.dnd.move");
+			dojo.require("dojo.dnd.autoscroll");
+			dojo.require("dojo.dnd.Mover");
+			dojo.require("dojo.dnd.common");
+			dojo.require("dojo.dnd.Manager");
+			dojo.require("dojo.dnd.Moveable");
+			dojo.require("dojo.dnd.TimedMoveable");
+			dojo.require("dojo.dnd.Avatar");
+			dojo.require("dojo.dnd.Selector");
+			dojo.require("dojo.dnd.Source");
+			dojo.require("dojo.dnd.Container");
+			dojo.require("dojo.io.script");
+			dojo.require("dojo.io.iframe");
+			dojo.require("dojo.data.api.Notification");
+			dojo.require("dojo.data.api.Request");
+			dojo.require("dojo.data.api.Identity");
+			dojo.require("dojo.data.api.Write");
+			dojo.require("dojo.data.api.Read");
+			dojo.require("dojo.data.util.filter");
+			dojo.require("dojo.data.util.sorter");
+			dojo.require("dojo.data.util.simpleFetch");
+			dojo.require("dojo.data.ItemFileWriteStore");
+			dojo.require("dojo.data.ItemFileReadStore");
+			dojo.require("dojo.data.ObjectStore");
+			dojo.require("dojo.cldr.supplemental");
+			dojo.require("dojo.cldr.monetary");
+			dojo.require("dojo.rpc.RpcService");
+			dojo.require("dojo.rpc.JsonService");
+			dojo.require("dojo.rpc.JsonpService");
+			dojo.require("dojo.cookie");
+			dojo.require("dojo.NodeList-traverse");
+			dojo.require("dojo.DeferredList");
+			dojo.require("dojo.fx");
+			dojo.require("dojo.date");
+			dojo.require("dojo.NodeList-manipulate");
+			dojo.require("dojo.NodeList-data");
+			dojo.require("dojo.number");
+			dojo.require("dojo.currency");
+			dojo.require("dojo.NodeList-fx");
+			dojo.require("dojo.behavior");
+			dojo.require("dojo.colors");
+			dojo.require("dojo.html");
+			dojo.require("dojo.AdapterRegistry");
+			dojo.require("dojo.uacss");
+			dojo.require("dojo.hash");
+			dojo.require("dojo.NodeList-html");
+			dojo.require("dojo.Stateful");
+			dojo.require("dojo.regexp");
+			dojo.require("dojo.parser");
+			dojo.require("dojo.back");
+			dojo.require("dojo.cache");
+			dojo.require("dojo.string");
+			dojo.require("dojo.window");
+
+			dojo.addOnLoad(function() {
+				var 
+					now= (new Date()).getTime();
+					text= ["The following modules have been loaded:"];
+				for (var p in dojo._loadedModules) text.push(p);
+				dojo.byId("status").innerHTML= text.join("<br>");
+				dojo.byId("time").innerHTML= ((now - start) / 1000) + "s";
+			});
+		</script>
+	</head>
+	<body class="tundra">
+		<h1>This demonstration loads all dojo modules (<em>non-built</em>) with the synchronous loader.</h1>
+		<p>Remember: this is an example of how the system loads during development (typically on a local server). All
+		significant dojo apps should be built before deployment which could result in this entire load requiring a single
+		transaction.</p>
+		<h1>Load Time</h1>
+		<p id="time"></p>
+		<h1>Status</h1>
+		<p id="status">loading</p>
+	</body>
+</html>
+

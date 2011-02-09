@@ -1,0 +1,34 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	 "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>dojo loaded by bdLoad</title>
+		<script type="text/javascript" src="../../lib/require.js"></script>
+		<script type="text/javaScript">
+			var start= (new Date()).getTime();
+			require({
+				packages:[{
+					name: 'dojo',
+					location:'../../../dojotoolkit/dojo',
+					main:'lib/main-browser',
+					lib: '.'
+				}],
+				deps:["dojo"],
+				callback:function(dojo){
+					dojo.byId("status").innerHTML= "The dojo package has been loaded.";
+					dojo.byId("time").innerHTML= (((new Date()).getTime() - start) / 1000) + "s";
+				}
+			});
+		</script>
+	</head>
+	<body class="tundra">
+		<h1>This demonstration loads <em>non-built</em> dojo with the bdLoad.</h1>
+		<p>Remember: this is an example of how the system loads during development (typically on a local server). All
+		significant dojo apps should be built before deployment which could result in this entire load requiring a single
+		transaction.</p>
+		<h1>Load Time</h1>
+		<p id="time"></p>
+		<h1>Status</h1>
+		<p id="status">loading</p>
+	</body>
+</html>

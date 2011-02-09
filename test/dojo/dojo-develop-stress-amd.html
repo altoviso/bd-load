@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	 "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>loading all dojo modules with bdLoad</title>
+		<script type="text/javascript" src="../../lib/require.js"></script>
+		<script type="text/javaScript">
+			var start= (new Date()).getTime();
+			require({
+				packages:[{
+					name: 'dojo',
+					location:'../../../dojotoolkit/dojo',
+					main:'lib/main-browser',
+					lib: '.'
+				}],
+				paths:{
+					i18n:"../../../dojotoolkit/dojo/lib/plugins/i18n",
+					text:"../../../dojotoolkit/dojo/lib/plugins/text"
+				},
+				deps:[
+					"dojo",
+					"dojo/fx/easing",
+					"dojo/fx/Toggler",
+					"dojo/date/stamp",
+					"dojo/date/locale",
+					"dojo/store/util/SimpleQueryEngine",
+					"dojo/store/util/QueryResults",
+					"dojo/store/DataStore",
+					"dojo/store/JsonRest",
+					"dojo/store/Memory",
+					"dojo/store/Cache",
+					"dojo/store/Observable",
+					"dojo/dnd/move",
+					"dojo/dnd/autoscroll",
+					"dojo/dnd/Mover",
+					"dojo/dnd/common",
+					"dojo/dnd/Manager",
+					"dojo/dnd/Moveable",
+					"dojo/dnd/TimedMoveable",
+					"dojo/dnd/Avatar",
+					"dojo/dnd/Selector",
+					"dojo/dnd/Source",
+					"dojo/dnd/Container",
+					"dojo/io/script",
+					"dojo/io/iframe",
+					"dojo/data/api/Notification",
+					"dojo/data/api/Request",
+					"dojo/data/api/Identity",
+					"dojo/data/api/Write",
+					"dojo/data/api/Read",
+					"dojo/data/util/filter",
+					"dojo/data/util/sorter",
+					"dojo/data/util/simpleFetch",
+					"dojo/data/ItemFileWriteStore",
+					"dojo/data/ItemFileReadStore",
+					"dojo/data/ObjectStore",
+					"dojo/cldr/supplemental",
+					"dojo/cldr/monetary",
+					"dojo/rpc/RpcService",
+					"dojo/rpc/JsonService",
+					"dojo/rpc/JsonpService",
+					"dojo/cookie",
+					"dojo/NodeList-traverse",
+					"dojo/DeferredList",
+					"dojo/fx",
+					"dojo/date",
+					"dojo/NodeList-manipulate",
+					"dojo/NodeList-data",
+					"dojo/number",
+					"dojo/currency",
+					"dojo/NodeList-fx",
+					"dojo/behavior",
+					"dojo/colors",
+					"dojo/html",
+					"dojo/AdapterRegistry",
+					"dojo/uacss",
+					"dojo/hash",
+					"dojo/NodeList-html",
+					"dojo/Stateful",
+					"dojo/regexp",
+					"dojo/parser",
+					"dojo/back",
+					"dojo/cache",
+					"dojo/string",
+					"dojo/window"
+				],
+				callback:function(dojo){
+					var 
+						now= (new Date()).getTime();
+						text= ["The following modules have been loaded:"];
+					for (var p in require.modules) text.push(p);
+					dojo.byId("status").innerHTML= text.join("<br>");
+					dojo.byId("time").innerHTML= ((now - start) / 1000) + "s";
+				}
+			});
+		</script>
+	</head>
+	<body class="tundra">
+		<h1>This demonstration loads all dojo modules (<em>non-built</em>) with bdLoad.</h1>
+		<p>Remember: this is an example of how the system loads during development (typically on a local server). All
+		significant dojo apps should be built before deployment which could result in this entire load requiring a single
+		transaction.</p>
+		<h1>Load Time</h1>
+		<p id="time"></p>
+		<h1>Status</h1>
+		<p id="status">loading</p>
+	</body>
+</html>
