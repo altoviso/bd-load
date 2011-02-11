@@ -3,9 +3,8 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     bc29c56cc56bac0f6b9c1b3d938dc2f937997df0 2011-02-11 09:50:42 UTC
-parent:       570e63784a015adb4a587c12899a4b8c55496d94 2011-02-11 09:40:57 UTC
-child:        356e20fa2b9aba9ad6be707e4f363340c72d715d 2011-02-11 10:37:06 UTC
+checkout:     356e20fa2b9aba9ad6be707e4f363340c72d715d 2011-02-11 10:37:06 UTC
+parent:       bc29c56cc56bac0f6b9c1b3d938dc2f937997df0 2011-02-11 09:50:42 UTC
+child:        8c5deb9d658745ad287582b9784e0667f99ce894 2011-02-11 10:49:25 UTC
 tags:         trunk
-comment:      updated built control scripts to reflect new has.js handling
-              (user: rcgill)
+comment:      renamed test fails iaw convention (user: rcgill)

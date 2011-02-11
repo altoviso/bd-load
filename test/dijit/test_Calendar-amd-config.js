@@ -14,5 +14,5 @@ var require= {
 		i18n:"../../../dojotoolkit/dojo/lib/plugins/i18n",
 		text:"../../../dojotoolkit/dojo/lib/plugins/text"
 	},
-	deps:["test_Calendar-AMD-main"]
+	deps:["test_Calendar-amd-main"]
 };
