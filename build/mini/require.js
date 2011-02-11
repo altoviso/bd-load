@@ -1013,7 +1013,6 @@
   
  {
     onLoadCallback= req.ready;
-    req.deps= req.deps || ["config"];
   }
 
   {

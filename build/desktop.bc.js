@@ -23,7 +23,7 @@
     "loader-amdFactoryScan":0
   },
 
-  has:"../../bdBuild/lib/has/bdLoadHas.js",
+  has:"*bdBuild",
 
   noCopy:1,
 

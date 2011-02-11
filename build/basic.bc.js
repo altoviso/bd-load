@@ -23,8 +23,6 @@
     "loader-amdFactoryScan":1
   },
 
-  has:"../../bdBuild/lib/has/naiveHas.js",
-
   noCopy:1,
 
   noDefaultPackage:1
