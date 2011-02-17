@@ -3,7 +3,9 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     8c5deb9d658745ad287582b9784e0667f99ce894 2011-02-11 10:49:25 UTC
-parent:       356e20fa2b9aba9ad6be707e4f363340c72d715d 2011-02-11 10:37:06 UTC
+checkout:     ff1bc7ad1bd6ee1b7b8645786c32fbe578a954c3 2011-02-17 10:21:12 UTC
+parent:       8c5deb9d658745ad287582b9784e0667f99ce894 2011-02-11 10:49:25 UTC
+child:        c70ef9b8256036515c40eeec93edf12b8c3f2271 2011-02-19 01:15:20 UTC
 tags:         trunk
-comment:      corrected wrong built require filename (user: rcgill)
+comment:      interim, improved object returned to node; ensured baseUrl ends
+              in slash internally; not thoroughly tested (user: rcgill)

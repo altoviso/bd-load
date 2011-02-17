@@ -288,6 +288,13 @@
         req[p]= config[p];
       };
 
+      // make sure baseUrl ends with a slash
+      if (!req.baseUrl) {
+        req.baseUrl= "./";
+      } else if (!/\/$/.test(req.baseUlr)) {
+        req.baseUrl+= "/";
+      }
+
       // interpret a pathTransforms as items that should be added to the end of the existing map
       for (transforms= config.pathTransforms, i= 0; transforms && i<transforms.length; i++) {
         pathTransforms.push(transforms[i]);
@@ -696,6 +703,18 @@
     return id;
   };
 
+  if (has("loader-undefApi")) {
+    req.undef= function(moduleId) {
+     // In order to reload a module, it must be undefined (this routine) and then re-requested.
+     // This is useful for testing frameworks (at least).
+       var 
+         module= getModule(moduleId, 0),
+         pqn= module.pqn;
+       setDel(modules, pqn);
+       setDel(waiting, pqn);
+       setDel(injectedUrls, module.url);
+    };
+  }
 
   if (has("loader-traceApi")) {
     // these make debugging nice
@@ -1321,7 +1340,7 @@
   {
     vendor:"altoviso.com",
     version:"1.0-beta",
-    baseUrl:"",
+    baseUrl:"./",
     host:"browser",
     isBrowser:1,
     timeout:0,
