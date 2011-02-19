@@ -1,12 +1,12 @@
 {
-  srcLoader:"../lib/require.js",
+  files:[["../lib/require.js", "./require.js"]],
 
-  destBasePath:"mini",
+  destBasePath:"./mini",
 
   staticHasFlags:{
     "dom":1,
-    //"dom-addEventListener"
-    //"console-log-apply"
+    "dom-addEventListener":-1,
+    "console-log-apply":0,
     "loader-node":0,
     "loader-injectApi":1,
     "loader-timeoutApi":0,
@@ -21,9 +21,5 @@
     "loader-createHas":0,
     "loader-createHasModule":0,
     "loader-amdFactoryScan":0
-  },
-
-  noCopy:1,
-
-  noDefaultPackage:1
+  }
 }

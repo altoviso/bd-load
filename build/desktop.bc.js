@@ -1,12 +1,12 @@
 {
-  srcLoader:"../lib/require.js",
+  files:[["../lib/require.js", "./require.js"]],
 
-  destBasePath:"desktop",
+  destBasePath:"./desktop",
 
   staticHasFlags:{
     "dom":1,
-    //"dom-addEventListener":1,
-    //"console-log-apply"
+    "dom-addEventListener":-1,
+    "console-log-apply":0,
     "loader-node":0,
     "loader-injectApi":1,
     "loader-timeoutApi":0,
@@ -23,9 +23,5 @@
     "loader-amdFactoryScan":0
   },
 
-  has:"*bdBuild",
-
-  noCopy:1,
-
-  noDefaultPackage:1
+  has:"*bdBuild"
 }

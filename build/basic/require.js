@@ -288,6 +288,13 @@
         req[p]= config[p];
       };
 
+      // make sure baseUrl ends with a slash
+      if (!req.baseUrl) {
+        req.baseUrl= "./";
+      } else if (!/\/$/.test(req.baseUlr)) {
+        req.baseUrl+= "/";
+      }
+
       // interpret a pathTransforms as items that should be added to the end of the existing map
       for (transforms= config.pathTransforms, i= 0; transforms && i<transforms.length; i++) {
         pathTransforms.push(transforms[i]);
@@ -677,6 +684,8 @@
   req.toAbsMid= function(id) {
     return id;
   };
+
+  
 
 
   
@@ -1205,12 +1214,13 @@
 (
 this.require || {},
 {
+  baseUrl:"",
   host:"browser",
   isBrowser:1,
-  timeout:0,
   packages:[],
-  baseUrl:""
-},
+  timeout:0
+}
+,
 // this is a naive has.js implementation intended for the loaders internal use only
 // this is typically used for projects that want has.js control completely separate from the loader
 (function() {

@@ -288,6 +288,13 @@
         req[p]= config[p];
       };
 
+      // make sure baseUrl ends with a slash
+      if (!req.baseUrl) {
+        req.baseUrl= "./";
+      } else if (!/\/$/.test(req.baseUlr)) {
+        req.baseUrl+= "/";
+      }
+
       // interpret a pathTransforms as items that should be added to the end of the existing map
       for (transforms= config.pathTransforms, i= 0; transforms && i<transforms.length; i++) {
         pathTransforms.push(transforms[i]);
@@ -677,6 +684,8 @@
   req.toAbsMid= function(id) {
     return id;
   };
+
+  
 
 
   
@@ -1163,12 +1172,13 @@
 (
 this.require || {},
 {
+  baseUrl:"",
   host:"browser",
   isBrowser:1,
-  timeout:0,
   packages:[],
-  baseUrl:""
-},
+  timeout:0
+}
+,
 // this is a default, standard has implementation to use when you don't have/want the real has.js
 (function() {
   // if has is not provided, define a standard implementation
