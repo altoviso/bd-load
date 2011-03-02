@@ -173,7 +173,7 @@
       req.pathTransforms= [],
 
     paths=
-      // requirejs paths
+      // CommonJS paths
       {},
 
     pathsMapProg=
@@ -449,6 +449,7 @@
     compactPath= function(path) {
       while(/\/\.\//.test(path)) path= path.replace(/\/\.\//, "/");
       path= path.replace(/(.*)\/\.$/, "$1");
+//TODO why \. in [^\/\.] next
       while(/[^\/\.]+\/\.\./.test(path)) path= path.replace(/[^\/]+\/\.\.\/?/, "");
       return path;
 /*

@@ -3,7 +3,8 @@ repository:   /home/rcgill/fossils/bdLoad.fossil
 local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
 project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
 server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     b4f3ea0e48a7f4fdb310f1895d52f0c4a8ba959c 2011-02-25 10:07:41 UTC
-parent:       c70ef9b8256036515c40eeec93edf12b8c3f2271 2011-02-19 01:15:20 UTC
+checkout:     0ad79fe899fc33a910b1deeb741f74328376caf1 2011-03-02 10:12:57 UTC
+parent:       b4f3ea0e48a7f4fdb310f1895d52f0c4a8ba959c 2011-02-25 10:07:41 UTC
+child:        560bf61b84f50dd0c383398e623524079ba5857c 2011-03-02 10:16:23 UTC
 tags:         trunk
-comment:      improved compactPath; typos (user: rcgill)
+comment:      rebuilt all with refactored bdBuild; all check OK (user: rcgill)
