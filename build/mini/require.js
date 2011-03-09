@@ -272,7 +272,7 @@
 
     doWork= function(deps, callback, onLoadCallback) {
       ((deps && deps.length) || callback) && req(deps || [], callback || noop);
-      onLoadCallback && req.addOnLoad(onLoadCallback);
+      onLoadCallback && req.ready(onLoadCallback);
     },
 
     config= function(config, booting) {
@@ -923,7 +923,9 @@
 
 
     
-
+ {
+      req.ready= noop;
+    }
   }
 
   
@@ -1026,14 +1028,11 @@
     require= req;
   }
 
-  var onLoadCallback;
   
- {
-    onLoadCallback= req.ready;
-  }
+
 
   {
-    doWork(req.deps, req.callback, onLoadCallback);
+    doWork(req.deps, req.callback, userConfig.ready);
   }
 
 })

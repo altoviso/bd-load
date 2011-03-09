@@ -272,7 +272,7 @@
 
     doWork= function(deps, callback, onLoadCallback) {
       ((deps && deps.length) || callback) && req(deps || [], callback || noop);
-      onLoadCallback && req.addOnLoad(onLoadCallback);
+      onLoadCallback && req.ready(onLoadCallback);
     },
 
     config= function(config, booting) {
@@ -1051,7 +1051,7 @@
           }
         };
 
-      req.addOnLoad= function(
+      req.ready= function(
         context, //(object) The context in which to run execute callback
                  //(function) callback, if context missing
         callback //(function) The function to execute.
@@ -1069,6 +1069,7 @@
         onLoad();
       };
     }
+
   }
 
   
@@ -1206,16 +1207,12 @@
     require= req;
   }
 
-  var onLoadCallback;
   {
-    onLoadCallback= userConfig.ready;
-    req.ready= req.addOnLoad;
     req.def= define;
   }
 
-
   {
-    doWork(req.deps, req.callback, onLoadCallback);
+    doWork(req.deps, req.callback, userConfig.ready);
   }
 
 })
