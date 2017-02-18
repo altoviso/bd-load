@@ -30,9 +30,9 @@ is also one of the fastest and smallest.
 Although it was important to add tons of capabilities and features into the loader back six years ago for historical and marketing reasons,
 much of that machinery was never needed to build optimal applications.
 
-###Indeed--most AMD loaders either solve problems we don't care about (and are therefore bloated) or are poorly built (or both!).
+###Most AMD loaders either solve problems we don't care about--and are therefore bloated--or are poorly built...or both!
 
-Furthermore, ES6 modules are vaporware and, when they do become available, add almost nothing to the party.
+Furthermore, native ES6 modules are vaporware and, when they do become available, add almost nothing to the party.
 
 ###bd-load implements exactly the features needed to build modern applications and leverages ES6 to express the fastest and smallest AMD loader ever built.
 
@@ -49,7 +49,7 @@ Coming soon.
 
 # History
 
-Though not common knowledge, the bd-load has been in wide-scale continuous with Dojo since 2011. The project was initially
+Though not common knowledge, bd-load has been in wide-scale continuous use with Dojo since 2011. The project was initially
 made public in late 2010 and rapidly incorporated into the [Dojo Toolkit](https://dojotoolkit.org/) culminating in release 1.5 of 
 Dojo.
 
@@ -58,7 +58,7 @@ as well as the AMD API. It includes many still-novel features, and can be built 
 AMD-compatible loaders available using the Dojo build system (also originally an ALTOVISO project).
 
 From mid 2011, almost all maintenance of the backdraft loader took place within the Dojo project. In late 2012, a prototype
-space-optimized version of the loader ([bdload-so.js](https://github.com/altoviso/bdLoad/blob/master/lib/bdload-so.js)) 
+space-optimized version of the loader ([bdload-so.js](https://github.com/altoviso/bdLoad/blob/0f62f334a751e8d4b4620af0d08c9fb33a7a644a/lib/bdload-so.js)) 
 was constructed. That loader was used as inspiration for the Dojo v2.0 loader.
 
 Since JS6 includes several features that make a smaller loader possible, and further since the typical loaders available 
