@@ -1,23 +1,29 @@
 {
-  "name": "bdLoad",
-  "version": "0.8.0",
-  "author": "Rawld Gill",
-  "description": "The backdraft loader--an AMD-compliant loader with has.js integration, enhanced debugging support, and other powerful features that's also small and fast.",
-  "directories": {
-    "lib": "lib"
-  },
-  "main":"node",
-  "licenses": [
-     {
-         "type": "BSD",
-         "url": "https://github.com/altoviso/bdLoad/blob/master/LICENSE.txt"
-     }
-  ],
-  "repository": {
-    "type":"git",
-    "url":"https://github.com/altoviso/bdLoad"
-  },
-  "bugs": "http://bdframework.org/repo/reportlist",
-  "keywords": ["JavaScript", "backdraft", "AsynchronousDefinition", "commonjs", "node", "Dojo", "Toolkit"],
-  "homepage": "http://bdframework.org"
+	"name": "bd-load",
+	"version": "2.0.0-alpha-1",
+	"description": "A small and fast AMD loader for building modern applications on node.js and the browser.",
+	"homepage": "http://github.com/altoviso/bd-load",
+	"bugs": "http://github.com/altoviso/bd-load/issues",
+	"directories": {
+		"test": "test"
+	},
+	"scripts": {
+		"test": "node node_modules/bd-smoke/node-runner.js -profile=test/all -loader=../bd-load/load.js -packages=test;../../test"
+	},
+	"dependencies": {},
+	"devDependencies": {},
+	"github": "http://github.com/altoviso/bd-load",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/altoviso/bd-load.git"
+	},
+	"licenses": [
+		{
+			"type": "BSD",
+			"url": "https://github.com/altoviso/bdLoad/blob/master/LICENSE.txt"
+		}
+	],
+	"keywords": ["JavaScript", "bd-load", "bdload", "AMD", "backdraft", "AsynchronousDefinition", "commonjs", "node", "Dojo", "Toolkit"],
+	"author": "Rawld Gill <rgill@altoviso.com> (http://altoviso.com/)",
+	"license": "BSD-3-Clause"
 }

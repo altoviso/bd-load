@@ -1,9 +1,0 @@
-project-name: bdLoad
-repository:   /home/rcgill/fossils/bdLoad.fossil
-local-root:   /usr/home/rcgill/git-mirrors/bdLoad/work/
-project-code: 77d0a853987bb68b34abc89b47c807fcab08940a
-server-code:  0c3d82f3ee6f1c957e8b6c6406954cb3ee1eb827
-checkout:     84c83e49690b34a057e509ee16bc61fc962ebb46 2011-03-08 19:34:11 UTC
-parent:       560bf61b84f50dd0c383398e623524079ba5857c 2011-03-02 10:16:23 UTC
-tags:         trunk
-comment:      made ready API equivalent to RequireJS's (user: rcgill)

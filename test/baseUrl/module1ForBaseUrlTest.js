@@ -1,0 +1,1 @@
+define({value:"module1 for baseUrl test"});
