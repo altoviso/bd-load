@@ -1,0 +1,29 @@
+{
+  "name": "bd-load",
+  "description": "A small and fast AMD loader for building modern applications on node.js and the browser.",
+  "main": "load.js",
+  "authors": [
+    "Rawld Gill <rgill@altoviso.com> (http://altoviso.com/)"
+  ],
+  "license": "BSD-3-Clause",
+  "keywords": [
+    "JavaScript",
+    "bd-load",
+    "bdload",
+    "AMD",
+    "backdraft",
+    "AsynchronousDefinition",
+    "commonjs",
+    "node",
+    "Dojo",
+    "Toolkit"
+  ],
+  "homepage": "https://github.com/altoviso/bdLoad",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
