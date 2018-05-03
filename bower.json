@@ -19,7 +19,7 @@
     "Dojo",
     "Toolkit"
   ],
-  "homepage": "https://github.com/altoviso/bdLoad",
+  "homepage": "https://github.com/altoviso/bd-load",
   "ignore": [
     "**/.*",
     "node_modules",

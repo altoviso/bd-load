@@ -20,7 +20,7 @@
 	"licenses": [
 		{
 			"type": "BSD",
-			"url": "https://github.com/altoviso/bdLoad/blob/master/LICENSE.txt"
+			"url": "https://github.com/altoviso/bd-load/blob/master/LICENSE.txt"
 		}
 	],
 	"keywords": ["JavaScript", "bd-load", "bdload", "AMD", "backdraft", "AsynchronousDefinition", "commonjs", "node", "Dojo", "Toolkit"],

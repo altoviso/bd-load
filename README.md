@@ -47,19 +47,19 @@ and space, then bd-load is likely the best option.
 With `npm`:
 
 ```
-npm install -D bd-smoke
+npm install bd-load
 ```
 
 With `yarn`:
 
 ```
-yarn add bd-smoke
+yarn add bd-load
 ```
 
 With `bower`:
 
 ```
-bower install --save bd-smoke
+bower install --save bd-load
 ```
 
 
