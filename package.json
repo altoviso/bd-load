@@ -1,6 +1,6 @@
 {
 	"name": "bd-load",
-	"version": "2.0.1",
+	"version": "2.0.2",
 	"description": "A small and fast AMD loader for building modern applications on node.js and the browser.",
 	"homepage": "http://github.com/altoviso/bd-load",
 	"bugs": "http://github.com/altoviso/bd-load/issues",
