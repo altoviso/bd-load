@@ -32,7 +32,7 @@ much of that machinery was never needed to build optimal applications.
 
 ###Most AMD loaders either solve problems we don't care about--and are therefore bloated--or are poorly built...or both!
 
-Furthermore, native ES6 modules are vaporware and, when they do become available, add almost nothing to the party.
+Furthermore, AMD loaders bring some configuration capability not currently available with ES6 modules, so they are still relevant.
 
 ###bd-load implements exactly the features needed to build modern applications and leverages ES6 to express the fastest and smallest AMD loader ever built.
 
@@ -44,7 +44,23 @@ and space, then bd-load is likely the best option.
 
 ## Installation
 
-Coming soon.
+With `npm`:
+
+```
+npm install -D bd-smoke
+```
+
+With `yarn`:
+
+```
+yarn add bd-smoke
+```
+
+With `bower`:
+
+```
+bower install --save bd-smoke
+```
 
 
 # History
@@ -59,16 +75,15 @@ AMD-compatible loaders available using the Dojo build system (also originally an
 
 From mid 2011, almost all maintenance of the backdraft loader took place within the Dojo project. In late 2012, a prototype
 space-optimized version of the loader ([bdload-so.js](https://github.com/altoviso/bdLoad/blob/0f62f334a751e8d4b4620af0d08c9fb33a7a644a/lib/bdload-so.js)) 
-was constructed. That loader was used as inspiration for the Dojo v2.0 loader.
+was constructed.
 
 Since JS6 includes several features that make a smaller loader possible, and further since the typical loaders available 
 are packed full of cruft, outdated APIs, and naive features, ALTOVISO built and released v2.x of bd-load in early 2017.
 
 ## Status
 
-As of February 2017, the loader is under active development. It includes tests that prove most of the AMD specification.
-Currently the plugin API is not available. Although we find that API mostly unnecessary, it is currently being added, and
-with more advanced features than are specified in the AMD specification.
+The loader is currently being used in commercial projects. It includes tests that prove most of the AMD specification.
+Currently the plugin API is not available, and, since we find that API unnecessary, there are no plans to add it.
 
 ## License
 
